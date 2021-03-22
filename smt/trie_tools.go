@@ -11,7 +11,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/aergoio/aergo-lib/db"
+	"github.com/p4u/asmt/db"
 )
 
 // LoadCache loads the first layers of the merkle tree given a root

@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/aergoio/aergo-lib/db"
+	"github.com/p4u/asmt/db"
 )
 
 // Trie is a modified sparse Merkle tree.
@@ -27,7 +27,7 @@ type Trie struct {
 	lock sync.RWMutex
 	// hash is the hash function used in the trie
 	hash func(data ...[]byte) []byte
-	// TrieHeight is the number if bits in a key
+	// TrieHeight is the number of bits in a key
 	TrieHeight int
 	// LoadDbCounter counts the nb of db reads in on update
 	LoadDbCounter int
