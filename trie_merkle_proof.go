@@ -122,6 +122,12 @@ func (s *Trie) VerifyInclusion(ap [][]byte, key, value []byte) bool {
 	return bytes.Equal(s.Root, s.verifyInclusion(ap, 0, key, leafHash))
 }
 
+// VerifyInclusionWithRoot verifies that key/value is included in the trie with provided root
+func (s *Trie) VerifyInclusionWithRoot(root []byte, ap [][]byte, key, value []byte) bool {
+	leafHash := s.hash(key, value, []byte{byte(s.TrieHeight - len(ap))})
+	return bytes.Equal(root, s.verifyInclusion(ap, 0, key, leafHash))
+}
+
 // verifyInclusion returns the merkle root by hashing the merkle proof items
 func (s *Trie) verifyInclusion(ap [][]byte, keyIndex int, key, leafHash []byte) []byte {
 	if keyIndex == len(ap) {
