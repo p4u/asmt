@@ -171,6 +171,12 @@ func (s *Trie) VerifyInclusionC(bitmap, key, value []byte, ap [][]byte, length i
 	return bytes.Equal(s.Root, s.verifyInclusionC(bitmap, key, leafHash, ap, length, 0, 0))
 }
 
+// VerifyInclusionWithRootC verifies that key/value is included in the trie with latest root
+func (s *Trie) VerifyInclusionWithRootC(root, bitmap, key, value []byte, ap [][]byte, length int) bool {
+	leafHash := s.hash(key, value, []byte{byte(s.TrieHeight - length)})
+	return bytes.Equal(root, s.verifyInclusionC(bitmap, key, leafHash, ap, length, 0, 0))
+}
+
 // verifyInclusionC returns the merkle root by hashing the merkle proof items
 func (s *Trie) verifyInclusionC(bitmap, key, leafHash []byte, ap [][]byte, length, keyIndex, apIndex int) []byte {
 	if keyIndex == length {
