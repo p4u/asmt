@@ -201,10 +201,7 @@ func (s *Trie) TrieRootExists(root []byte) bool {
 	s.db.lock.RLock()
 	dbval := s.db.Store.Get(root)
 	s.db.lock.RUnlock()
-	if len(dbval) != 0 {
-		return true
-	}
-	return false
+	return len(dbval) != 0
 }
 
 // Commit stores the updated nodes to disk.

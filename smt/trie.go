@@ -137,7 +137,7 @@ func (s *Trie) update(root []byte, keys, values, batch [][]byte, iBatch, height 
 			// create a new shortcut batch.
 			// simply storing the value will make it hard to move up the
 			// shortcut in case of sibling deletion
-			batch = make([][]byte, 31, 31)
+			batch = make([][]byte, 31)
 			node := s.leafHash(keys[0], values[0], root, batch, 0, height)
 			ch <- mresult{node, false, nil}
 		}
@@ -413,7 +413,7 @@ func (s *Trie) loadChildren(root []byte, height, iBatch int, batch [][]byte) ([]
 	if height%4 == 0 {
 		if len(root) == 0 {
 			// create a new default batch
-			batch = make([][]byte, 31, 31)
+			batch = make([][]byte, 31)
 			batch[0] = []byte{0}
 		} else {
 			var err error
@@ -452,7 +452,7 @@ func (s *Trie) loadBatch(root []byte) ([][]byte, error) {
 			// Return a copy so that Commit() doesnt have to be called at
 			// each block and still commit every state transition.
 			// Before Commit, the same batch is in liveCache and in updatedNodes
-			newVal := make([][]byte, 31, 31)
+			newVal := make([][]byte, 31)
 			copy(newVal, val)
 			return newVal, nil
 		}
@@ -466,7 +466,7 @@ func (s *Trie) loadBatch(root []byte) ([][]byte, error) {
 		if s.atomicUpdate {
 			// Return a copy so that Commit() doesnt have to be called at
 			// each block and still commit every state transition.
-			newVal := make([][]byte, 31, 31)
+			newVal := make([][]byte, 31)
 			copy(newVal, val)
 			return newVal, nil
 		}
@@ -493,7 +493,7 @@ func (s *Trie) loadBatch(root []byte) ([][]byte, error) {
 
 // parseBatch decodes the byte data into a slice of nodes and bitmap
 func (s *Trie) parseBatch(val []byte) [][]byte {
-	batch := make([][]byte, 31, 31)
+	batch := make([][]byte, 31)
 	bitmap := val[:4]
 	// check if the batch root is a shortcut
 	if bitIsSet(val, 31) {

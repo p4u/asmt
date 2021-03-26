@@ -8,6 +8,6 @@ require (
 	github.com/guptarohit/asciigraph v0.4.1
 	github.com/stretchr/testify v1.7.0
 	github.com/syndtr/goleveldb v1.0.1-0.20200815110645-5c35d600f0ca
-	go.vocdoni.io/dvote v1.0.0
+	go.vocdoni.io/dvote v0.6.1-0.20210326182730-ba86106de602
 	golang.org/x/crypto v0.0.0-20210317152858-513c2a44f670
 )

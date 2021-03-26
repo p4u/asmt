@@ -19,7 +19,7 @@ import (
 // big census (up to 8 Million entries) we need to increase the maximums.
 const bareMaxArrayLength uint64 = 1024 * 1014 * 8 // 8 Million
 
-const bareMaxUnmarshalBytes uint64 = 1024 * 1024 * 200 // 200 MiB
+const bareMaxUnmarshalBytes uint64 = bareMaxArrayLength * 32 * 2 // 512 MiB
 
 type Tree struct {
 	Tree           *asmt.Trie
@@ -48,8 +48,8 @@ type exportData struct {
 }
 
 const (
-	MaxKeySize   = 256
-	MaxValueSize = 256
+	MaxKeySize   = 32
+	MaxValueSize = 64
 	dbRootPrefix = "this is the last root for the SMT tree"
 )
 
