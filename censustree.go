@@ -136,8 +136,8 @@ func (t *Tree) Add(index, value []byte) error {
 	if t.snapshotRoot != nil {
 		return fmt.Errorf("cannot add to a snapshot trie")
 	}
-	if len(index) < 4 {
-		return fmt.Errorf("index too small (%d), minimum size is 4 bytes", len(index))
+	if len(index) < 4 || len(index) > MaxKeySize {
+		return fmt.Errorf("wrong key size: %d", len(index))
 	}
 	if len(value) > MaxValueSize {
 		return fmt.Errorf("index or value claim data too big")
@@ -162,11 +162,9 @@ func (t *Tree) AddBatch(indexes, values [][]byte) ([]int, error) {
 	if len(values) > 0 && len(indexes) != len(values) {
 		return wrongIndexes, fmt.Errorf("indexes and values have different size")
 	}
-	var hashedIndexes [][]byte
-	var hashedValues [][]byte
 	var value []byte
 	for i, key := range indexes {
-		if len(key) < 4 {
+		if len(key) < 4 || len(key) > MaxKeySize {
 			wrongIndexes = append(wrongIndexes, i)
 			continue
 		}
@@ -178,12 +176,10 @@ func (t *Tree) AddBatch(indexes, values [][]byte) ([]int, error) {
 			}
 			value = values[i]
 		}
-		hashedIndexes = append(hashedIndexes, asmt.Hasher(key))
-		hashedValues = append(hashedValues, asmt.Hasher(value))
-	}
-	_, err := t.Tree.Update(hashedIndexes, hashedValues)
-	if err != nil {
-		return wrongIndexes, err
+		_, err := t.Tree.Update([][]byte{asmt.Hasher(key)}, [][]byte{asmt.Hasher(value)})
+		if err != nil {
+			return wrongIndexes, err
+		}
 	}
 	atomic.StoreUint64(&t.size, 0) // TBD: improve this
 	return wrongIndexes, t.Commit()
@@ -205,28 +201,27 @@ func (t *Tree) GenProof(index, value []byte) ([]byte, error) {
 	t.updateAccessTime()
 	var err error
 	var ap [][]byte
-	var pvalue []byte
-	var bitmap []byte
+	var pvalue, bitmap []byte
 	var length int
+	var included bool
+	key := asmt.Hasher(index)
 	if t.snapshotRoot != nil {
-		bitmap, ap, length, _, _, pvalue, err = t.Tree.MerkleProofCompressedR(
-			asmt.Hasher(index),
+		bitmap, ap, length, included, _, pvalue, err = t.Tree.MerkleProofCompressedR(key,
 			t.snapshotRoot)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		bitmap, ap, length, _, _, pvalue, err = t.Tree.MerkleProofCompressed(
-			asmt.Hasher(index))
+		bitmap, ap, length, included, _, pvalue, err = t.Tree.MerkleProofCompressed(key)
 		if err != nil {
 			return nil, err
 		}
 	}
-	//if !included {
-	//	return nil, fmt.Errorf("not included")
-	//}
+	if !included {
+		return nil, nil
+	}
 	if !bytes.Equal(pvalue, asmt.Hasher(value)) {
-		return nil, fmt.Errorf("incorrect value on genProof")
+		return nil, fmt.Errorf("incorrect value or key on genProof")
 	}
 	return bare.Marshal(&Proof{Bitmap: bitmap, Length: length, Siblings: ap, Value: pvalue})
 }
