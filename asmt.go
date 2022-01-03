@@ -7,7 +7,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"go.vocdoni.io/dvote/censustree"
 	"go.vocdoni.io/dvote/log"
 	"go.vocdoni.io/proto/build/go/models"
 
@@ -32,9 +31,6 @@ type Tree struct {
 	snapshotSize   uint64
 }
 
-// check that censustree.Tree interface is matched by Tree
-var _ censustree.Tree = (*Tree)(nil)
-
 type Proof struct {
 	Bitmap   []byte
 	Length   int
@@ -57,8 +53,8 @@ const (
 	dbRootPrefix = "this is the last root for the SMT tree"
 )
 
-// NewTree initializes a new AergoSMT tree following the censustree.Tree interface specification.
-func NewTree(name, storageDir string) (censustree.Tree, error) {
+// NewTree initializes a new AergoSMT tree following the Tree interface specification.
+func NewTree(name, storageDir string) (*Tree, error) {
 	tr := &Tree{}
 	err := tr.Init(name, storageDir)
 	return tr, err
@@ -371,7 +367,7 @@ func (t *Tree) ImportDump(data []byte) error {
 
 // Snapshot returns a Tree instance of a exiting merkle root.
 // A Snapshot cannot be modified.
-func (t *Tree) Snapshot(root []byte) (censustree.Tree, error) {
+func (t *Tree) Snapshot(root []byte) (*Tree, error) {
 	exist, err := t.HashExists(root)
 	if err != nil {
 		return nil, err

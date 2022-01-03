@@ -7,8 +7,8 @@ require (
 	github.com/aergoio/aergo-lib v1.0.2
 	github.com/guptarohit/asciigraph v0.4.1
 	github.com/stretchr/testify v1.7.0
-	github.com/syndtr/goleveldb v1.0.1-0.20200815110645-5c35d600f0ca
-	go.vocdoni.io/dvote v1.0.4-0.20210809075252-5e1716d5e0f5
-	go.vocdoni.io/proto v1.0.4-0.20210726091234-bceaf416353b
-	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97
+	github.com/syndtr/goleveldb v1.0.1-0.20210305035536-64b5b1c73954
+	go.vocdoni.io/dvote v1.0.4-0.20211224171421-4172e1643820
+	go.vocdoni.io/proto v1.13.3-0.20211213155005-46b4177904ba
+	golang.org/x/crypto v0.0.0-20210920023735-84f357641f63
 )
